@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 
-from .db import users as db_users
+from db import users as db_users
 
 app = FastAPI()
 
