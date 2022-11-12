@@ -18,6 +18,9 @@ zip lambda_function.zip -u $(git ls-files *.py)
 # upload to S3
 aws s3 cp lambda_function.zip s3://fast-api-app
 
+# remove unnecessary files locally after deployment
+rm -rf lib lambda_function.zip
+
 # update lambda code
 aws lambda update-function-code  \
   --function-name FastApiApp \
@@ -28,8 +31,5 @@ aws lambda update-function-code  \
 #aws lambda update-function-configuration \
 #  --function-name FastApiApp \
 #  --handler main.aws_lambda_handler
-
-# remove unnecessary files locally after deployment
-rm -rf lib lambda_function.zip
 
 echo "FastApiApp deployed!"
