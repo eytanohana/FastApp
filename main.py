@@ -5,7 +5,6 @@ from fastapi import FastAPI
 from sqlmodel import create_engine, Session, select
 from mangum import Mangum
 
-from db import users as db_users
 from models import User
 
 load_dotenv(Path(__file__).parent / '.env')
@@ -25,8 +24,10 @@ async def get_users(amount: int = None):
         return users
 
 
-
 @app.post('/users', response_model=User)
 async def add_user(user: User):
-    db_users.append(user.dict())
-    return user
+    with Session(engine) as session:
+        session.add(user)
+        session.commit()
+        session.refresh(user)
+        return user
