@@ -32,3 +32,4 @@ aws lambda update-function-code  \
 # remove unnecessary files locally after deployment
 rm -rf lib lambda_function.zip
 
+echo "FastApiApp deployed!"
