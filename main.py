@@ -1,8 +1,16 @@
+import os
+from pathlib import Path
+from dotenv import load_dotenv
 from fastapi import FastAPI
+from sqlmodel import create_engine, Session, select
 from mangum import Mangum
 
 from db import users as db_users
 from models import User
+
+load_dotenv(Path(__file__).parent / '.env')
+DB_URL = os.environ.get('DB_CONNECTION_URL')
+engine = create_engine(DB_URL, echo=True)
 
 app = FastAPI()
 aws_lambda_handler = Mangum(app)
