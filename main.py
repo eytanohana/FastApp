@@ -1,7 +1,8 @@
 import os
 from pathlib import Path
 from dotenv import load_dotenv
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException, status
+from sqlalchemy.exc import IntegrityError
 from sqlmodel import create_engine, Session, select
 from mangum import Mangum
 
@@ -27,7 +28,10 @@ async def get_users(amount: int = None):
 @app.post('/users', response_model=User)
 async def add_user(user: User):
     with Session(engine) as session:
-        session.add(user)
-        session.commit()
+        try:
+            session.add(user)
+            session.commit()
+        except IntegrityError:
+            raise HTTPException(status.HTTP_400_BAD_REQUEST, detail='User already taken')
         session.refresh(user)
         return user
