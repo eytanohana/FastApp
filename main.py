@@ -11,3 +11,8 @@ async def get_users(amount: int = None):
     users = db_users[:amount] if amount else db_users
     return [User(**user) for user in users]
 
+
+@app.post('/users', response_model=User)
+async def add_user(user: User):
+    db_users.append(user.dict())
+    return user
