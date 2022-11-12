@@ -26,9 +26,10 @@ async def get_users(amount: int = None):
 async def add_user(user: UserCreate):
     with Session(engine) as session:
         try:
-            session.add(user)
+            user_db = User.from_orm(user)
+            session.add(user_db)
             session.commit()
         except IntegrityError:
             raise HTTPException(status.HTTP_400_BAD_REQUEST, detail='User already taken')
-        session.refresh(user)
-        return user
+        session.refresh(user_db)
+        return user_db
