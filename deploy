@@ -13,7 +13,7 @@ pip install -t lib -r requirements.txt
 pushd lib
 zip ../lambda_function.zip -r .
 popd
-zip lambda_function.zip -u $(ls *.py)
+zip lambda_function.zip -u $(git ls-files *.py)
 
 # upload to S3
 aws s3 cp lambda_function.zip s3://fast-api-app
