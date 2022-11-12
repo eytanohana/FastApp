@@ -18,8 +18,12 @@ aws_lambda_handler = Mangum(app)
 
 @app.get('/users', response_model=list[User])
 async def get_users(amount: int = None):
-    users = db_users[:amount] if amount else db_users
-    return [User(**user) for user in users]
+    with Session(engine) as session:
+        statement = select(User).limit(amount)
+        users = session.exec(statement)
+        users = users.all()
+        return users
+
 
 
 @app.post('/users', response_model=User)
