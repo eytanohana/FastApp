@@ -1,9 +1,11 @@
 from fastapi import FastAPI
+from mangum import Mangum
 
 from db import users as db_users
 from models import User
 
 app = FastAPI()
+aws_lambda_handler = Mangum(app)
 
 
 @app.get('/users', response_model=list[User])
