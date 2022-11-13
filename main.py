@@ -48,6 +48,21 @@ def add_user(*, session: Session = Depends(get_db_session), user: models.UserCre
     return user_db
 
 
+@app.patch('/users/{user_id}', response_model=models.UserRead)
+def update_user(*, session: Session = Depends(get_db_session),
+                user_id: int,
+                user: models.UserUpdate):
+    db_user = session.get(models.User, user_id)
+    if not db_user:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='User not found')
+    for k, v in user.dict(exclude_unset=True).items():
+        setattr(db_user, k, v)
+    session.add(db_user)
+    session.commit()
+    session.refresh(db_user)
+    return db_user
+
+
 @app.delete('/users/{user_id}')
 def delete_user(*, session: Session = Depends(get_db_session), user_id: int):
     user = session.get(models.User, user_id)

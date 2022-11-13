@@ -25,3 +25,12 @@ class UserCreate(UserBase):
 class UserRead(UserBase):
     user_id: int
 
+
+class UserUpdate(UserBase):
+    name: Optional[str] = None
+    email: Optional[EmailStr] = None
+    phone_number: Optional[str] = None
+    zip_code: Optional[str] = None
+    country: Optional[str] = None
+    birthday: Optional[datetime] = None
+
