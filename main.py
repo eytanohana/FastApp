@@ -22,8 +22,10 @@ def get_db_session():
 
 
 @app.get('/users', response_model=list[UserRead])
-def get_users(session: Session = Depends(get_db_session), amount: int = Query(default=10, le=100)):
-    return session.exec(select(User).limit(amount)).all()
+def get_users(session: Session = Depends(get_db_session),
+              amount: int = Query(default=10, le=100),
+              offset: int = 0):
+    return session.exec(select(User).offset(offset).limit(amount)).all()
 
 
 @app.get('/users/{user_id}', response_model=UserRead)
