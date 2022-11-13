@@ -1,7 +1,7 @@
 import os
 from pathlib import Path
 from dotenv import load_dotenv
-from fastapi import FastAPI, HTTPException, status
+from fastapi import FastAPI, HTTPException, status, Query
 from sqlalchemy.exc import IntegrityError
 from sqlmodel import create_engine, Session, select
 from mangum import Mangum
@@ -17,7 +17,7 @@ aws_lambda_handler = Mangum(app)
 
 
 @app.get('/users', response_model=list[UserRead])
-async def get_users(amount: int = None):
+def get_users(amount: int = Query(default=10, le=100)):
     with Session(engine) as session:
         return session.exec(select(User).limit(amount)).all()
 
