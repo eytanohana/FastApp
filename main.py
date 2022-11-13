@@ -46,3 +46,13 @@ def add_user(*, session: Session = Depends(get_db_session), user: UserCreate):
         raise HTTPException(status.HTTP_400_BAD_REQUEST, detail='User already taken')
     session.refresh(user_db)
     return user_db
+
+
+@app.delete('/users/{user_id}')
+def delete_user(*, session: Session = Depends(get_db_session), user_id: int):
+    user = session.get(User, user_id)
+    if not user:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='User not found')
+    session.delete(user)
+    session.commit()
+    return {'ok': True}
