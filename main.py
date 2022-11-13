@@ -22,6 +22,15 @@ async def get_users(amount: int = None):
         return session.exec(select(User).limit(amount)).all()
 
 
+@app.get('/users/{user_id}', response_model=UserRead)
+def get_user_by_id(user_id: int):
+    with Session(engine) as session:
+        user = session.get(User, user_id)
+        if not user:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='User not found')
+        return user
+
+
 @app.post('/users', response_model=UserRead)
 async def add_user(user: UserCreate):
     with Session(engine) as session:
