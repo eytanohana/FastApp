@@ -6,7 +6,7 @@ from sqlalchemy.exc import IntegrityError
 from sqlmodel import create_engine, Session, select
 from mangum import Mangum
 
-from models import User, UserRead, UserCreate
+import models
 
 load_dotenv(Path(__file__).parent / '.env')
 DB_URL = os.environ.get('DB_CONNECTION_URL')
@@ -21,25 +21,25 @@ def get_db_session():
         yield session
 
 
-@app.get('/users', response_model=list[UserRead])
+@app.get('/users', response_model=list[models.UserRead])
 def get_users(session: Session = Depends(get_db_session),
               amount: int = Query(default=10, le=100),
               offset: int = 0):
-    return session.exec(select(User).offset(offset).limit(amount)).all()
+    return session.exec(select(models.User).offset(offset).limit(amount)).all()
 
 
-@app.get('/users/{user_id}', response_model=UserRead)
+@app.get('/users/{user_id}', response_model=models.UserRead)
 def get_user_by_id(*, session: Session = Depends(get_db_session), user_id: int):
-    user = session.get(User, user_id)
+    user = session.get(models.User, user_id)
     if not user:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='User not found')
     return user
 
 
-@app.post('/users', response_model=UserRead)
-def add_user(*, session: Session = Depends(get_db_session), user: UserCreate):
+@app.post('/users', response_model=models.UserRead)
+def add_user(*, session: Session = Depends(get_db_session), user: models.UserCreate):
     try:
-        user_db = User.from_orm(user)
+        user_db = models.User.from_orm(user)
         session.add(user_db)
         session.commit()
     except IntegrityError:
@@ -50,7 +50,7 @@ def add_user(*, session: Session = Depends(get_db_session), user: UserCreate):
 
 @app.delete('/users/{user_id}')
 def delete_user(*, session: Session = Depends(get_db_session), user_id: int):
-    user = session.get(User, user_id)
+    user = session.get(models.User, user_id)
     if not user:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='User not found')
     session.delete(user)
