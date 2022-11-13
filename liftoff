@@ -3,7 +3,7 @@
 # Exit if any command fails
 set -eux pipefail
 
-# use my aws profile
+# use my aws profile (comment out to use your default profile)
 export AWS_PROFILE=personal
 
 # install dependencies into lib folder
@@ -27,7 +27,8 @@ aws lambda update-function-code  \
   --s3-bucket fast-api-app \
   --s3-key lambda_function.zip
 
-## update lambda handler
+## update lambda handler, not needed
+## unless the handler is changed in the code
 #aws lambda update-function-configuration \
 #  --function-name FastApiApp \
 #  --handler main.aws_lambda_handler
