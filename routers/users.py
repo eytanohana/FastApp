@@ -4,17 +4,17 @@ from sqlmodel import Session, select
 from sqlalchemy.exc import IntegrityError
 from fastapi import Depends, Query, HTTPException, status, APIRouter
 
-users_router = APIRouter()
+users_router = APIRouter(prefix='/users', tags=['users'])
 
 
-@users_router.get('/users', response_model=list[users.UserRead])
+@users_router.get('', response_model=list[users.UserRead])
 def get_users(session: Session = Depends(get_db_session),
               amount: int = Query(default=10, le=100),
               offset: int = 0):
     return session.exec(select(users.User).offset(offset).limit(amount)).all()
 
 
-@users_router.get('/users/{user_id}', response_model=users.UserRead)
+@users_router.get('/{user_id}', response_model=users.UserRead)
 def get_user_by_id(*, session: Session = Depends(get_db_session), user_id: int):
     user = session.get(users.User, user_id)
     if not user:
@@ -22,7 +22,7 @@ def get_user_by_id(*, session: Session = Depends(get_db_session), user_id: int):
     return user
 
 
-@users_router.post('/users', response_model=users.UserRead)
+@users_router.post('', response_model=users.UserRead)
 def add_user(*, session: Session = Depends(get_db_session), user: users.UserCreate):
     try:
         user_db = users.User.from_orm(user)
@@ -34,7 +34,7 @@ def add_user(*, session: Session = Depends(get_db_session), user: users.UserCrea
     return user_db
 
 
-@users_router.patch('/users/{user_id}', response_model=users.UserRead)
+@users_router.patch('/{user_id}', response_model=users.UserRead)
 def update_user(*, session: Session = Depends(get_db_session),
                 user_id: int,
                 user: users.UserUpdate):
@@ -49,7 +49,7 @@ def update_user(*, session: Session = Depends(get_db_session),
     return db_user
 
 
-@users_router.delete('/users/{user_id}')
+@users_router.delete('/{user_id}')
 def delete_user(*, session: Session = Depends(get_db_session), user_id: int):
     user = session.get(users.User, user_id)
     if not user:
