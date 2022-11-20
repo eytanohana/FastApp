@@ -1,6 +1,8 @@
-from sqlmodel import SQLModel, Field
+from sqlmodel import SQLModel, Field, Relationship
 
-from typing import Optional
+from typing import Optional, TYPE_CHECKING, List
+if TYPE_CHECKING:
+    from .users import User
 
 
 class CompanyBase(SQLModel):
@@ -11,6 +13,8 @@ class CompanyBase(SQLModel):
 class Company(CompanyBase, table=True):
     __tablename__ = 'companies'
     company_id: Optional[int] = Field(default=None, primary_key=True)
+
+    users: List['User'] = Relationship(back_populates='company')
 
 
 class CompanyCreate(CompanyBase):

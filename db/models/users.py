@@ -1,7 +1,9 @@
 from pydantic import EmailStr
-from sqlmodel import SQLModel, Field
-from typing import Optional
+from sqlmodel import SQLModel, Field, Relationship
+from typing import Optional, TYPE_CHECKING
 from datetime import datetime
+if TYPE_CHECKING:
+    from .companies import Company
 
 
 class UserBase(SQLModel):
@@ -11,11 +13,14 @@ class UserBase(SQLModel):
     zip_code: Optional[str] = None
     country: Optional[str] = None
     birthday: Optional[datetime] = None
+    company_id: Optional[int] = Field(default=None, foreign_key='companies.company_id')
 
 
 class User(UserBase, table=True):
     __tablename__ = 'users'
     user_id: Optional[int] = Field(default=None, primary_key=True)
+
+    company: Optional['Company'] = Relationship(back_populates='users')
 
 
 class UserCreate(UserBase):
