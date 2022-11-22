@@ -4,7 +4,7 @@ from mangum import Mangum
 from routers import users_router, companies_router
 
 
-app = FastAPI(root_path='/dev')
+app = FastAPI()
 aws_lambda_handler = Mangum(app)
 
 app.include_router(users_router)
