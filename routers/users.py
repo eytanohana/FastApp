@@ -54,6 +54,6 @@ def delete_user(*, session: Session = Depends(get_db_session), user_id: int):
     user = session.get(users.User, user_id)
     if not user:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='User not found')
-    session.delete(user)
-    session.commit()
-    return {'ok': True}
+    # session.delete(user)
+    # session.commit()
+    return {'ok': 'Deletion disabled for now'}

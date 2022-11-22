@@ -54,6 +54,6 @@ def delete_company(*, session: Session = Depends(get_db_session), company_id: in
     company = session.get(companies.Company, company_id)
     if not company:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='Company not found')
-    session.delete(company)
-    session.commit()
-    return {'ok': True}
+    # session.delete(company)
+    # session.commit()
+    return {'msg': 'Deletion disabled for now'}
